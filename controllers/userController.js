@@ -1,5 +1,5 @@
 const pool = require("../config/db");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // Foydalanuvchilarni olish
@@ -29,8 +29,8 @@ exports.signup = async (req, res) => {
     }
 
     // Parolni shifrlash
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
 
     // Yangi foydalanuvchini kiritish
     const newUser = await pool.query(
@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
     const user = userResult.rows[0];
 
     // Parolni tekshirish
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcryptjs.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Parol noto‘g‘ri" });
     }
